@@ -22,6 +22,16 @@ def main() -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(PITCH, encoding="utf-8")
 
+    # Runtime validation: the written entry must exist, be 1-200 UTF-8
+    # characters, and match the expected bytes exactly.
+    raw = output_path.read_bytes()
+    text = raw.decode("utf-8")
+    expected = PITCH.encode("utf-8")
+    if not 1 <= len(text) <= 200:
+        raise SystemExit(f"entry.txt has {len(text)} characters, expected 1-200")
+    if raw != expected:
+        raise SystemExit("entry.txt bytes do not match the expected pitch")
+
 
 if __name__ == "__main__":
     main()
